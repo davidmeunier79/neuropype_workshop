@@ -22,7 +22,7 @@ from neuropype_ephy.pipelines.ts_to_conmat import create_pipeline_time_series_to
 
 from params_conn import main_path, data_path, subject_ids, sessions
 from params_conn import freq_band_names, con_method
-from params_conn import correl_analysis_name, epoch_window_length
+from params_conn import spectral_analysis_name, epoch_window_length
 
 
 def get_freq_band(freq_band_name):
@@ -30,8 +30,8 @@ def get_freq_band(freq_band_name):
     from params_conn import freq_band_names, freq_bands
 
     if freq_band_name in freq_band_names:
-        print freq_band_name
-        print freq_band_names.index(freq_band_name)
+        print (freq_band_name)
+        print (freq_band_names.index(freq_band_name))
 
         return freq_bands[freq_band_names.index(freq_band_name)]
 
@@ -71,7 +71,7 @@ def create_datasource():
 
 def create_main_workflow_spectral():
 
-    main_workflow = pe.Workflow(name=correl_analysis_name)
+    main_workflow = pe.Workflow(name=spectral_analysis_name)
     main_workflow.base_dir = main_path
 
     # info source

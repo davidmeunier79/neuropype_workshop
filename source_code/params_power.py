@@ -2,11 +2,13 @@
 
 data_type = 'fif'
 
-main_path = '/run/media/pasca/paska/meg_data/omega/sample_BIDS_omega/'
-data_path = main_path
+#main_path = '/run/media/pasca/paska/meg_data/omega/sample_BIDS_omega/'
+#data_path = main_path
 
-subject_ids = ['sub-0002', 'sub-0003', 'sub-0004', 'sub-0006', 'sub-0007']
-sessions = ['ses-0001']
+#subject_ids = ['sub-0002', 'sub-0003', 'sub-0004', 'sub-0006', 'sub-0007']
+#sessions = ['ses-0001']
+
+from params import *
 
 # -------------------------- SET power variables --------------------------#
 fmin = 0

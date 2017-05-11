@@ -1,13 +1,8 @@
 """ Parameters file for run_spectral_modularity.py"""
 
+from params import *
+
 data_type = 'fif'
-
-main_path = '/run/media/pasca/paska/meg_data/omega/sample_BIDS_omega/'
-data_path = main_path
-
-subject_ids = ['sub-0003', 'sub-0004', 'sub-0006']
-sessions = ['ses-0001']
-
 
 # ----------------------- SET connectivity variables ----------------------#
 
@@ -17,12 +12,11 @@ sessions = ['ses-0001']
 freq_bands = [[8, 12], [13, 29]]
 freq_band_names = ['alpha', 'beta']
 
-
 # 'pli', 'plv', 'pli2_unbiased', 'coh', 'cohy', 'ppc', 'wpli'
 # 'imcoh', 'wpli2_debiased', 'correl'
 con_method = 'coh'
 epoch_window_length = 3.0
 
 # pipeline directory within the main_path dir
-correl_analysis_name = 'spectral_connectivity_' + data_type + \
+spectral_analysis_name = 'spectral_connectivity_' + data_type + \
                             '_' + con_method
