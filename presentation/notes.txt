@@ -1,0 +1,19 @@
+# Reunion Karim
+
+E-mails sunday about who have downloaded:
+    * dataset 
+    * install anaconda
+    * python packages (neuropype_graph/neuropype_ephy)
+
+Pipelines:
+    * Preprocessing of ICA (jupyter notebook, html report)
+    * Power analysis (Tarek 's notebook)
+    * Connectivity analysis (circular plot)
+    * permutations on connectivity (needs igraph?)
+    
+After workshop:
+    * visu 3D modules
+    * for MEG, mostly the problem of the coordinates of the sources
+    * some example 
+    
+    
