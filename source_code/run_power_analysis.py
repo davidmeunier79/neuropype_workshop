@@ -87,4 +87,4 @@ if __name__ == '__main__':
     main_workflow.write_graph(graph2use='colored')  # colored
     main_workflow.config['execution'] = {'remove_unnecessary_outputs': 'false'}
     
-    main_workflow.run(plugin='MultiProc', plugin_args={'n_procs': 8})
+    main_workflow.run(plugin='MultiProc', plugin_args={'n_procs': 3})

@@ -102,5 +102,5 @@ if __name__ == '__main__':
     main_workflow.write_graph(graph2use='colored')  # colored
     main_workflow.config['execution'] = {'remove_unnecessary_outputs': 'false'}
 
-    # Run workflow locally on 4 CPUs
-    main_workflow.run(plugin='MultiProc', plugin_args={'n_procs': 4})
+    # Run workflow locally on 3 CPUs
+    main_workflow.run(plugin='MultiProc', plugin_args={'n_procs': 3})
