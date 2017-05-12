@@ -18,12 +18,18 @@ import nipype.interfaces.io as nio
 from nipype.interfaces.utility import IdentityInterface, Function
 
 from neuropype_ephy.preproc import create_ts
+
 from neuropype_ephy.pipelines.ts_to_conmat import create_pipeline_time_series_to_spectral_connectivity
+from neuropype_graph.pipelines.conmat_to_graph import create_pipeline_conmat_to_graph_density
 
 from params_conn import main_path, data_path, subject_ids, sessions
 from params_conn import freq_band_names, con_method
 from params_conn import spectral_analysis_name, epoch_window_length
 
+from params_conn import con_den,radatools_optim
+
+
+from params_permuts import ref_labels_file,ref_coords_file
 
 def get_freq_band(freq_band_name):
 
@@ -34,7 +40,6 @@ def get_freq_band(freq_band_name):
         print (freq_band_names.index(freq_band_name))
 
         return freq_bands[freq_band_names.index(freq_band_name)]
-
 
 def create_infosource():
 
@@ -111,6 +116,18 @@ def create_main_workflow_spectral():
     main_workflow.connect(create_ts_node, 'sfreq',
                           spectral_workflow, 'inputnode.sfreq')
 
+
+    if 'rada' in spectral_analysis_name.split('_'):
+        
+        graph_den_pipe = create_pipeline_conmat_to_graph_density(pipeline_name = "graph_den_pipe",main_path = main_path, multi= False, con_den = con_den,mod = True, plot = True, optim_seq = radatools_optim)
+        #graph_den_pipe = create_pipeline_conmat_to_graph_density("graph_den_pipe",main_path,multi = False, con_den = con_den)
+        
+        main_workflow.connect(spectral_workflow,'spectral.conmat_file',graph_den_pipe,'inputnode.conmat_file')
+        
+        graph_den_pipe.inputs.inputnode.labels_file = ref_labels_file
+        graph_den_pipe.inputs.inputnode.coords_file = ref_coords_file
+        
+    
     return main_workflow
 
 
