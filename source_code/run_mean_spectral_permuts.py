@@ -13,16 +13,14 @@ import nipype.interfaces.io as nio
 from params_permuts import nb_permuts,ref_labels_file,ref_coords_file,freq_band_names
 
 from params_permuts import main_path,spectral_analysis_name,mean_spectral_permut_analysis_name
+from params_permuts import mean_radatools_optim,mean_con_den
 
-#from define_variables import ROI_coords_file,ROI_MNI_coords_file,ROI_labels_file 
+from neuropype_graph.pipelines.conmat_to_graph import create_pipeline_conmat_to_graph_density
 
 from neuropype_graph.nodes.correl_mat import PrepareMeanCorrel
-#from neuropype_graph.pipelines.conmat_to_graph import create_pipeline_conmat_to_graph_density
-
 from neuropype_graph.nodes.graph_stats import ShuffleMatrix
 
-#from dmgraphanalysis.coclass import *
-    
+
 def force_list(elem):
 
     if isinstance(elem,list) :
@@ -102,15 +100,15 @@ def run_mean_correl():
     
     ################################################ modular decomposition on norm_coclass ############################################
 	
-    #if 'rada' in mean_correl_permut_analysis_name.split('_'):
+    if 'rada' in mean_spectral_permut_analysis_name.split('_'):
         
-        #graph_den_pipe = create_pipeline_conmat_to_graph_density(pipeline_name = "graph_den_pipe",main_path = main_path, multi= False, con_den = mean_con_den,mod = True, plot = False, optim_seq = mean_radatools_optim)
-        ##graph_den_pipe = create_pipeline_conmat_to_graph_density("graph_den_pipe",main_path,multi = False, con_den = con_den)
+        graph_den_pipe = create_pipeline_conmat_to_graph_density(pipeline_name = "graph_den_pipe",main_path = main_path, multi= False, con_den = mean_con_den,mod = True, plot = False, optim_seq = mean_radatools_optim)
+        #graph_den_pipe = create_pipeline_conmat_to_graph_density("graph_den_pipe",main_path,multi = False, con_den = con_den)
         
-        #main_workflow.connect(shuffle_matrix,'shuffled_matrix_file',graph_den_pipe,'inputnode.conmat_file')
+        main_workflow.connect(shuffle_matrix,'shuffled_matrix_file',graph_den_pipe,'inputnode.conmat_file')
         
-        #graph_den_pipe.inputs.inputnode.labels_file = ROI_labels_file
-        #graph_den_pipe.inputs.inputnode.coords_file = ROI_MNI_coords_file
+        graph_den_pipe.inputs.inputnode.labels_file = ref_labels_file
+        graph_den_pipe.inputs.inputnode.coords_file = ref_coords_file
         
     
     
@@ -126,5 +124,5 @@ if __name__ =='__main__':
     #### Run workflow 
     main_workflow.config['execution'] = {'remove_unnecessary_outputs':'false'}
     
-    main_workflow.run()
-    #main_workflow.run(plugin='MultiProc', plugin_args={'n_procs' : 4})
+    #main_workflow.run()
+    main_workflow.run(plugin='MultiProc', plugin_args={'n_procs' : 3})
