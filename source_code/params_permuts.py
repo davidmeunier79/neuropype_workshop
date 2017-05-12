@@ -5,7 +5,7 @@ from params_conn import *
 
 import os
 
-nb_permuts = 10
+nb_permuts = 100
 
 alpha = 1.0/float(nb_permuts)
 
