@@ -23,13 +23,24 @@ from neuropype_graph.nodes.graph_stats import ShuffleMatrix
 
 #from dmgraphanalysis.coclass import *
     
+def force_list(elem):
+
+    if isinstance(elem,list) :
+        
+        return elem
+    else:
+        return [elem]
+    
+
+
+
 ######################################### Infosources
     
 def create_infosource():
     
-    infosource = pe.Node(interface=niu.IdentityInterface(fields=['seed','freq_band']),name="infosource")
+    infosource = pe.Node(interface=niu.IdentityInterface(fields=['permut','freq_band_name']),name="infosource")
     
-    infosource.iterables = [('freq_band',freq_band_names),('seed',range(-1,nb_permuts))]
+    infosource.iterables = [('freq_band_name',freq_band_names),('permut',range(-1,nb_permuts))]
     return infosource
 
 
@@ -37,17 +48,16 @@ def create_infosource():
     
 def create_datasource_correl():
 
-    datasource = pe.Node(interface=nio.DataGrabber(infields = ['freq_band'],outfields=['Z_cor_mat_files','coords_files']),name = 'datasource')
+    datasource = pe.Node(interface=nio.DataGrabber(infields = ['freq_band_name'],outfields=['Z_cor_mat_files','coords_files','labels_files']),name = 'datasource')
     
     datasource.inputs.base_directory = main_path
     
     datasource.inputs.template = '%s/%s/_freq_band_name_%s_sess_index_*_subject_id_*/%s/%s%s'
     
     datasource.inputs.template_args = dict(
-    #Z_cor_mat_files=[[cor_mat_analysis_name,"nii_to_conmat","compute_conf_cor_mat","Z_cor_mat_resid_ts",".npy"]],
-    coords_files= [[spectral_analysis_name,"",'freq_band', "create_ts","correct_channel_coords",".txt"]])
-    #labels_files= [[spectral_analysis_name,"",'freq_band', "create_ts","correct_channel_names",".txt"]])
-    Z_cor_mat_files=[[spectral_analysis_name,"ts_to_conmat",'freq_band',"spectral","conmat_0_coh",".npy"]],
+    Z_cor_mat_files=[[spectral_analysis_name,"ts_to_conmat",'freq_band_name',"spectral","conmat_0_coh",".npy"]],
+    coords_files= [[spectral_analysis_name,"",'freq_band_name', "create_ts","correct_channel_coords",".txt"]],
+    labels_files= [[spectral_analysis_name,"",'freq_band_name', "create_ts","correct_channel_names",".txt"]])
     
     datasource.inputs.sort_filelist = True
     
@@ -68,7 +78,7 @@ def run_mean_correl():
     #datasource = create_datasource_rada_by_reg_memory_signif_conf()
     datasource = create_datasource_correl()
             
-    main_workflow.connect(infosource,'freq_band',datasource,'freq_band')
+    main_workflow.connect(infosource,'freq_band_name',datasource,'freq_band_name')
         
         
         
@@ -76,19 +86,19 @@ def run_mean_correl():
     #### prepare_mean_correl
     prepare_mean_correl = pe.Node(interface = PrepareMeanCorrel(), name='prepare_mean_correl')
     
-    prepare_mean_correl.inputs.gm_mask_coords_file = ref_coords_file
-    #prepare_mean_correl.inputs.labels_file = ref_labels_file
+    #prepare_mean_correl.inputs.gm_mask_coords_file = ref_coords_file
+    prepare_mean_correl.inputs.gm_mask_labels_file = ref_labels_file
      
-    main_workflow.connect(datasource, 'Z_cor_mat_files',prepare_mean_correl,'cor_mat_files')
-    #main_workflow.connect(datasource, 'labels_files',prepare_mean_correl,'labels_files')
-    main_workflow.connect(datasource, 'coords_files',prepare_mean_correl,'coords_files')
+    main_workflow.connect(datasource, ('Z_cor_mat_files',force_list),prepare_mean_correl,'cor_mat_files')
+    main_workflow.connect(datasource, ('labels_files',force_list),prepare_mean_correl,'labels_files')
+    #main_workflow.connect(datasource, ('coords_files',force_list),prepare_mean_correl,'coords_files')
     
     
     ### shuffle matrix
     shuffle_matrix = pe.Node(interface = ShuffleMatrix(), name='shuffle_matrix')
     
     main_workflow.connect(prepare_mean_correl, 'avg_cor_mat_matrix_file',shuffle_matrix,'original_matrix_file')
-    main_workflow.connect(infosource, 'seed',shuffle_matrix,'seed')
+    main_workflow.connect(infosource, 'permut',shuffle_matrix,'seed')
     
     ################################################ modular decomposition on norm_coclass ############################################
 	

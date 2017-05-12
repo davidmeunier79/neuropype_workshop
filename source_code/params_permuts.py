@@ -5,8 +5,9 @@ from params_conn import *
 
 import os
 
-nb_permuts = 0
+nb_permuts = 10
 
+alpha = 1.0/float(nb_permuts)
 
 mean_spectral_permut_analysis_name = spectral_analysis_name + "_permuts_" + str(nb_permuts)
 
